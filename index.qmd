@@ -1,0 +1,38 @@
+---
+title: "Open Source Software Dashboard"
+format: dashboard
+---
+
+```{python}
+#| label: load-packages
+import itables
+from oss_dashboard.utils import format_data
+```
+
+```{python}
+#| label: load-data
+#| message: false
+
+niu_data = format_data("oss_dashboard/data/data_neuroinformatics-unit.json")
+brainglobe_data = format_data("oss_dashboard/data/data_brainglobe.json")
+
+itables.options.classes = "display nowrap"
+itables.options.buttons = ["csv", "colvis"]
+itables.options.columnControl = ["colVisDropdown", "order", ["orderAsc", "orderDesc", "search"]]
+itables.options.ordering = {"indicators": False, "handler": False}
+
+```
+
+
+## Row {.tabset}
+```{python}
+#| title: "Neuroinformatics Unit"
+
+itables.show(niu_data)
+```
+
+```{python}
+#| title: "BrainGlobe"
+
+itables.show(brainglobe_data)
+```

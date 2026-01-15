@@ -1,16 +1,12 @@
-# Org Metrics Dashboard
+# Open Source Software Metrics Dashboard
 
 An actions-powered dashboard to get an overview of your organization's open source repository health.
-
-[![Image preview](./assets/preview.png)](https://github-community-projects.github.io/org-metrics-dashboard)
 
 The dashboard provides a quick overview of your organization's public repositories. It fetches data from the GitHub API using actions and displays it in a github pages site. The dashboard provides the following information about your repositories:
 
 - License information
 - Issue and PR counts
 - Metrics around response times for issues and PRs
-
-Check out the live demo [here](https://github-community-projects.github.io/org-metrics-dashboard).
 
 ## Setting up the project for your organization
 
@@ -48,7 +44,7 @@ organization: 'github-community-projects'
 since: '2024-02-22'
 # Path of the github pages site. i.e. github-community-projects.github.io/org-metrics-dashboard
 # This will typically be "/{REPOSITORY_NAME}" if you are hosting on GitHub pages
-basePath: '/org-metrics-dashboard'
+basePath: '/dashboard'
 ```
 
 - `organization`: The name of the organization you want to fetch data from.
@@ -57,25 +53,10 @@ basePath: '/org-metrics-dashboard'
 
 ## Development
 
-This project is split into two parts:
-
-- **app**: the code for the frontend
-- **backend**: the code for the backend and fetcher
-
-Both are written in TypeScript. We use [npm workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces) to manage the dependencies between the two projects.
-
-### Prerequisites
-
-- Node.js 20.X or later
-- npm
 
 ### Environment variables
 
-You will need a `.env` file in the root of the project:
-
-```sh
-cp .env.example .env
-```
+You will need a `.env` file in the root of the project.
 
 The `GRAPHQL_TOKEN` token requires the following scopes:
 

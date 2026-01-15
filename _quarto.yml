@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: build
+
+execute: 
+  enabled: true
+
+website:
+  favicon: /img/logo_niu_light.png
+  site-url: "https://neuroinformatics.dev/dashboard/"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Dashboard
+      - href: about.qmd
+        text: About
+
+format:
+  html:
+    respect-user-color-scheme: true
+    theme:
+      light: [brand, niu-light.scss]
+      dark: [brand, niu-dark.scss]
+    toc: true
+    page-layout: full
+    mainfont: "Barlow"
+    monofont: "JetBrains Mono"
