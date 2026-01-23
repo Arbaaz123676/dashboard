@@ -21,8 +21,6 @@ def format_data(data_path: str) -> pd.DataFrame:
 
     cols_to_keep = [
         "repository_name",
-        "topics",
-        "license_name",
         "stars_count",
         "monthly_download_count",
         "total_download_count",
@@ -41,9 +39,29 @@ def format_data(data_path: str) -> pd.DataFrame:
         "closed_issues_average_age",
         "issues_response_median_age",
         "issues_response_average_age",
+        "topics",
+        "license_name",
     ]
 
+    rename_map = {
+        "repository_name": "name",
+        "license_name": "license",
+        "stars_count": "stars",
+        "monthly_download_count": "monthly downloads",
+        "total_download_count": "total downloads",
+        "conda_monthly_downloads": "conda monthly downloads",
+        "conda_total_downloads": "conda total downloads",
+        "collaborators_count": "collaborators",
+        "watchers_count": "watchers",
+        "open_issues_count": "open issues",
+        "closed_issues_count": "closed issues",
+        "open_pull_requests_count": "open PRs",
+        "merged_pull_requests_count": "merged PRs",
+        "forks_count": "forks",
+    }
+
     data = data[cols_to_keep]
+    data = data.rename(columns=rename_map)
 
     # Format topics as comma-separated list or empty string
     data["topics"] = data["topics"].apply(lambda x: ", ".join(x) if x else "")

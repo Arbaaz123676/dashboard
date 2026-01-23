@@ -16,23 +16,20 @@ from oss_dashboard.utils import format_data
 niu_data = format_data("oss_dashboard/data/data_neuroinformatics-unit.json")
 brainglobe_data = format_data("oss_dashboard/data/data_brainglobe.json")
 
-itables.options.classes = "display nowrap"
+itables.options.classes="display nowrap cell-border"
 itables.options.buttons = ["csv", "colvis"]
-itables.options.columnControl = ["colVisDropdown", "order", ["orderAsc", "orderDesc", "search"]]
+itables.options.columnControl=["order", "searchDropdown"]
 itables.options.ordering = {"indicators": False, "handler": False}
-
 ```
 
 
 ## Row {.tabset}
 ```{python}
 #| title: "Neuroinformatics Unit"
-
-itables.show(niu_data)
+itables.show(niu_data, fixedColumns={"start": 1, "end": 0}, scrollX=True, columnDefs=[{"className": "dt-left", "targets": "_all"}], style="width:100%;margin:auto", order=[[0, "desc"]],)
 ```
 
 ```{python}
 #| title: "BrainGlobe"
-
-itables.show(brainglobe_data)
+itables.show(brainglobe_data, fixedColumns={"start": 1, "end": 0}, scrollX=True, columnDefs=[{"className": "dt-left", "targets": "_all"}], style="width:100%;margin:auto",)
 ```
