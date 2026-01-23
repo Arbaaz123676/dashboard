@@ -17,7 +17,6 @@ website:
 
 format:
   html:
-    respect-user-color-scheme: true
     theme:
       light: [brand, niu-light.scss]
       dark: [brand, niu-dark.scss]
