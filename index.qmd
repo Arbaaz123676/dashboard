@@ -26,10 +26,10 @@ itables.options.ordering = {"indicators": False, "handler": False}
 ## Row {.tabset}
 ```{python}
 #| title: "Neuroinformatics Unit"
-itables.show(niu_data, fixedColumns={"start": 1, "end": 0}, scrollX=True, columnDefs=[{"className": "dt-left", "targets": "_all"}], style="width:100%;margin:auto", order=[[0, "desc"]],)
+itables.show(niu_data, fixedColumns={"start": 1, "end": 0}, scrollX=True, columnDefs=[{"className": "dt-left", "targets": "_all"}, {"targets": [-3, -5, -7], 'visible': False}], order=[[0, "desc"]],)
 ```
 
 ```{python}
 #| title: "BrainGlobe"
-itables.show(brainglobe_data, fixedColumns={"start": 1, "end": 0}, scrollX=True, columnDefs=[{"className": "dt-left", "targets": "_all"}], style="width:100%;margin:auto",)
+itables.show(brainglobe_data, fixedColumns={"start": 1, "end": 0}, scrollX=True,  columnDefs=[{"className": "dt-left", "targets": "_all"}, {"targets": [-3, -5, -7], 'visible': False}])
 ```
