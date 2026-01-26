@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 
 import pandas as pd
@@ -18,6 +19,7 @@ def format_data(data_path: str) -> pd.DataFrame:
 
     data = pd.DataFrame.from_dict(data, orient="index")
     data = data.reset_index(drop=True)
+    date_accessed = datetime.fromisoformat(data_json["meta"]["created_at"])
 
     cols_to_keep = [
         "repository_name",
@@ -83,4 +85,4 @@ def format_data(data_path: str) -> pd.DataFrame:
 
     data.columns = [snake_to_title(col) for col in data.columns]
 
-    return data
+    return data, date_accessed
