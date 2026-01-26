@@ -1,135 +1,71 @@
-# Org Metrics Dashboard
+# Open Source Software Metrics Dashboard
 
-An actions-powered dashboard to get an overview of your organization's open source repository health.
+A dashboard to get an overview of your organization's open source repository health.
 
-[![Image preview](./assets/preview.png)](https://github-community-projects.github.io/org-metrics-dashboard)
+The dashboard fetches data from the GitHub API and displays it in a Quarto-powered site. It provides the following information about your repositories:
 
-The dashboard provides a quick overview of your organization's public repositories. It fetches data from the GitHub API using actions and displays it in a github pages site. The dashboard provides the following information about your repositories:
+- Repository metadata (license, topics, stars, forks, watchers)
+- Issue and PR counts (open, closed, merged)
+- Metrics around response times for issues
+- Download statistics from PyPI and Conda
 
-- License information
-- Issue and PR counts
-- Metrics around response times for issues and PRs
+## Configuration
 
-Check out the live demo [here](https://github-community-projects.github.io/org-metrics-dashboard).
-
-## Setting up the project for your organization
-
-### Fork the repository
-
-You will need to [fork this repository](https://github.com/github-community-projects/org-metrics-dashboard/fork) into your org. Alternatively, you can clone this repository and push it to your org.
-
-### Actions
-
-Since we use the GitHub API and actions to generate the data, you will need to enable actions for the repository. You can do this by going to the `Actions` tab in the repository and enabling actions.
-
-You will need to set a secret in the repository settings. The secret is a GitHub token that has admin read access to the organization. You can create a token by going to `Settings` -> `Developer settings` -> `Personal access tokens` and creating a new token with the following scopes.
-
-- read:org
-- read:repo
-- read:project
-
-> [!NOTE]
-> To fetch collaborator counts, you need to provide a token that is an admin of the organization.
-
-The secret should be named `GRAPHQL_TOKEN`. You can set this for your repository in `Settings` -> `Secrets and variables` -> `Actions`.
-
-We use the PEPY API to fetch package download data. In order to fetch this data you will need an API key from [PEPY](https://www.pepy.tech/pepy-api). 
-You can set this key in the repository secrets as `PEPY_API_KEY`.
-
-### Configuration
-
-There is a `config.yml` located in the root of the project that contains the configuration for the project. The configuration is as follows:
+Edit `oss_dashboard/config.yml` to configure the dashboard:
 
 ```yaml
 ---
-# The GitHub organization name
-organization: 'github-community-projects'
-# An ISO 8601 date string representing the date to start fetching data from
-since: '2024-02-22'
-# Path of the github pages site. i.e. github-community-projects.github.io/org-metrics-dashboard
-# This will typically be "/{REPOSITORY_NAME}" if you are hosting on GitHub pages
-basePath: '/org-metrics-dashboard'
+# Organizations to pull metrics from (can be a single string or array)
+organization: ['org-name-1', 'org-name-2']
+
+# Start date to pull metrics from (ISO 8601 format)
+since: '2024-01-01'
+
+# GitHub Pages base path (for relative asset paths)
+basePath: '/dashboard'
 ```
 
-- `organization`: The name of the organization you want to fetch data from.
-- `since`: The date to start fetching data from. This is useful if you want to fetch data from a specific date.
-- `basePath`: **Important**. This is the path where the site will be hosted. If you are hosting the site on GitHub pages, you will need to set this to the repository name for links and assets to work correctly.
+## Environment Variables
 
-## Development
-
-This project is split into two parts:
-
-- **app**: the code for the frontend
-- **backend**: the code for the backend and fetcher
-
-Both are written in TypeScript. We use [npm workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces) to manage the dependencies between the two projects.
-
-### Prerequisites
-
-- Node.js 20.X or later
-- npm
-
-### Environment variables
-
-You will need a `.env` file in the root of the project:
+Create a `.env` file in the root of the project with the following variables:
 
 ```sh
-cp .env.example .env
+GRAPHQL_TOKEN=your_github_token
+PEPY_API_KEY=your_pepy_api_key
 ```
 
-The `GRAPHQL_TOKEN` token requires the following scopes:
-
-- read:org
-- read:repo
-- read:project
+The `GRAPHQL_TOKEN` requires the following GitHub scopes:
+- `read:org`
+- `read:repo`
+- `read:project`
 
 > [!NOTE]
-> To fetch collaborator counts, you need to provide a token that is an admin of the organization.
+> To fetch collaborator counts, the token must belong to an organization admin.
 
-The `PEPY_API_KEY` must be set in the `.env` file to fetch package download data.
+Get a PEPY API key from [pepy.tech](https://www.pepy.tech/pepy-api) for PyPI download statistics.
 
-### Installation
-
-```sh
-npm i
-```
-
-### Running the monorepo
-
-This will kick off both the fetcher and the app.
+## Installation
 
 ```sh
-npm run dev
+pip install ".[dev]"
 ```
 
-### Running each part separately
+## Usage
 
-If you wish to run the backend only:
+### Fetch Data
 
 ```sh
-npm run dev:backend
+python -m oss_dashboard.main
 ```
 
-If you wish to run the app only:
+This fetches metrics for all configured organizations and writes JSON files to `oss_dashboard/data/`.
 
-> Note that you need to provide a valid `data.json` file in the `app/src/data` directory in order to render the app.
+### Render Dashboard
+
+Requires [Quarto](https://quarto.org/) to be installed.
 
 ```sh
-npm run dev:app
+quarto render
 ```
 
-## License
-
-This project is licensed under the terms of the MIT open source license. Please refer to [MIT](./LICENSE.md) for the full terms.
-
-## Maintainers
-
-Check out the [CODEOWNERS](./CODEOWNERS) file to see who to contact for code changes.
-
-## Support
-
-If you need support using this project or have questions about it, please [open an issue in this repository](https://github.com/github-community-projects/org-metrics-dashboard/issues/new) and we'd be happy to help. Requests made directly to GitHub staff or the support team will be redirected here to open an issue. GitHub SLA's and support/services contracts do not apply to this repository.
-
-## More OSPO Tools
-
-Looking for more resources for your open source program office (OSPO)? Check out the [`github-ospo`](https://github.com/github/github-ospo) repo for a variety of tools designed to support your needs.
+This creates a static HTML site in the `build` directory.

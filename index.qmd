@@ -1,0 +1,39 @@
+---
+title: "Open Source Software Dashboard"
+format: dashboard
+---
+
+```{python}
+#| label: load-packages
+import itables
+from oss_dashboard.utils import format_data
+```
+
+```{python}
+#| label: load-data
+#| message: false
+
+niu_data, niu_date = format_data("oss_dashboard/data/data_neuroinformatics-unit.json")
+brainglobe_data, brainglobe_date = format_data("oss_dashboard/data/data_brainglobe.json")
+
+itables.options.classes="display nowrap cell-border"
+itables.options.buttons = ["csv", "colvis"]
+itables.options.columnControl=["order", "searchDropdown"]
+itables.options.ordering = {"indicators": False, "handler": False}
+```
+
+
+## Row {.tabset}
+```{python}
+#| title: "Neuroinformatics Unit"
+itables.show(niu_data, columnDefs=[{"className": "dt-left", "targets": "_all"}, {"targets": [-3, -5, -7], 'visible': False}], order=[[0, "asc"]],)
+
+print("Data last updated on:", niu_date.strftime("%A, %d. %B %Y %I:%M%p"))
+```
+
+```{python}
+#| title: "BrainGlobe"
+itables.show(brainglobe_data, columnDefs=[{"className": "dt-left", "targets": "_all"}, {"targets": [-3, -5, -7], 'visible': False}], order=[[0, "asc"]],)
+
+print("Data last updated on:", brainglobe_date.strftime("%A, %d. %B %Y %I:%M%p"))
+```
