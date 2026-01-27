@@ -60,12 +60,12 @@ jobs:
         run: python -m oss_dashboard.main
 
       - name: Set up Quarto
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         uses: quarto-dev/quarto-actions/setup@v2
 
       # 👇 single step that both renders and deploys to the gh‑pages branch
       - name: Render and publish
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages
