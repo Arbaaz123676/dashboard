@@ -20,20 +20,51 @@ itables.options.classes="display nowrap cell-border"
 itables.options.buttons = ["csv", "colvis"]
 itables.options.columnControl=["order", "searchDropdown"]
 itables.options.ordering = {"indicators": False, "handler": False}
+
+table_options = {
+    "columnDefs": [
+        {"className": "dt-left", "targets": "_all"},
+        {"targets": [-3, -5, -7], "visible": False},
+    ],
+    "order": [[0, "asc"]],
+    "scrollX": True,
+    "fixedColumns": {"start": 1},
+    "autoWidth": False,
+}
 ```
 
 
 ## Row {.tabset}
 ```{python}
 #| title: "Neuroinformatics Unit"
-itables.show(niu_data, columnDefs=[{"className": "dt-left", "targets": "_all"}, {"targets": [-3, -5, -7], 'visible': False}], order=[[0, "asc"]],)
-
+itables.show(niu_data, **table_options)
 print("Data last updated on:", niu_date.strftime("%A, %d. %B %Y %I:%M%p"))
 ```
 
 ```{python}
 #| title: "BrainGlobe"
-itables.show(brainglobe_data, columnDefs=[{"className": "dt-left", "targets": "_all"}, {"targets": [-3, -5, -7], 'visible': False}], order=[[0, "asc"]],)
-
+itables.show(brainglobe_data, **table_options)
 print("Data last updated on:", brainglobe_date.strftime("%A, %d. %B %Y %I:%M%p"))
 ```
+
+```{=html}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  if (!window.jQuery || !jQuery.fn || !jQuery.fn.dataTable) return;
+  const fix = () => {
+    jQuery.fn.dataTable.tables({ visible: true, api: true }).each(function () {
+      this.columns.adjust();
+      if (typeof this.fixedColumns === "function") {
+        this.fixedColumns().update();
+      }
+    });
+  };
+  requestAnimationFrame(() => {
+    requestAnimationFrame(fix);
+  });
+  jQuery('a[data-toggle="tab"], button[data-bs-toggle="tab"]').on(
+    "shown.bs.tab",
+    fix
+  );
+});
+</script>
