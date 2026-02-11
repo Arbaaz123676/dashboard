@@ -29,7 +29,7 @@ table_options = {
     "order": [[0, "asc"]],
     "scrollX": True,
     "fixedColumns": {"start": 1},
-    "autoWidth": False,
+    "autoWidth": True,
 }
 ```
 
@@ -46,6 +46,7 @@ print("Data last updated on:", niu_date.strftime("%A, %d. %B %Y %I:%M%p"))
 itables.show(brainglobe_data, **table_options)
 print("Data last updated on:", brainglobe_date.strftime("%A, %d. %B %Y %I:%M%p"))
 ```
+## Row
 
 ```{=html}
 <script>
@@ -59,12 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   };
-  requestAnimationFrame(() => {
-    requestAnimationFrame(fix);
-  });
-  jQuery('a[data-toggle="tab"], button[data-bs-toggle="tab"]').on(
-    "shown.bs.tab",
-    fix
-  );
+  window.addEventListener("load", fix);
+  jQuery('a[data-bs-toggle="tab"]').on("shown.bs.tab",fix);
 });
 </script>
+```
