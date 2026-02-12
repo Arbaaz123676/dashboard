@@ -2,6 +2,23 @@
 title: "Open Source Software Dashboard"
 format: dashboard
 ---
+```{=html}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  if (!window.jQuery || !jQuery.fn || !jQuery.fn.dataTable) return;
+  const fix = () => {
+    jQuery.fn.dataTable.tables({ visible: true, api: true }).each(function () {
+      this.columns.adjust();
+      if (typeof this.fixedColumns === "function") {
+        this.fixedColumns().update();
+      }
+    });
+  };
+  window.addEventListener("load", fix);
+  jQuery('a[data-bs-toggle="tab"]').on("shown.bs.tab",fix);
+});
+</script>
+```
 
 ```{python}
 #| label: load-packages
@@ -45,23 +62,4 @@ print("Data last updated on:", niu_date.strftime("%A, %d. %B %Y %I:%M%p"))
 #| title: "BrainGlobe"
 itables.show(brainglobe_data, **table_options)
 print("Data last updated on:", brainglobe_date.strftime("%A, %d. %B %Y %I:%M%p"))
-```
-## Row
-
-```{=html}
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  if (!window.jQuery || !jQuery.fn || !jQuery.fn.dataTable) return;
-  const fix = () => {
-    jQuery.fn.dataTable.tables({ visible: true, api: true }).each(function () {
-      this.columns.adjust();
-      if (typeof this.fixedColumns === "function") {
-        this.fixedColumns().update();
-      }
-    });
-  };
-  window.addEventListener("load", fix);
-  jQuery('a[data-bs-toggle="tab"]').on("shown.bs.tab",fix);
-});
-</script>
 ```
