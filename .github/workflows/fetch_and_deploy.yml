@@ -47,9 +47,10 @@ jobs:
       - name: Restore conda downloads cache
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.dashboard
+          path: ~/.dashboard
           key: conda-download-cache-${{ env.DATE }}
+          restore-keys: |
+            conda-download-cache-${{ runner.os }}-
 
       - name: Install dependencies
         run: |
@@ -63,11 +64,24 @@ jobs:
         if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
         uses: quarto-dev/quarto-actions/setup@v2
 
-      # 👇 single step that both renders and deploys to the gh‑pages branch
-      - name: Render and publish
+      # Render site
+      - name: Render site
         if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
-        uses: quarto-dev/quarto-actions/publish@v2
+        run: quarto render
+
+      # Configure GitHub Pages
+      - name: Configure Pages
+        if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
+        uses: actions/configure-pages@v5
+
+      # Upload only rendered output (build folder)
+      - name: Upload Pages artifact
+        if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-pages-artifact@v3
         with:
-          target: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: build
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
+        uses: actions/deploy-pages@v4
