@@ -58,7 +58,9 @@ jobs:
           pip install '.[dev]'
 
       - name: Fetch and save data
+        if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
         run: python -m oss_dashboard.main
+
 
       - name: Set up Quarto
         if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
