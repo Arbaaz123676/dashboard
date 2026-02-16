@@ -104,18 +104,15 @@ def main() -> None:
 
     load_dotenv()
 
-    graphql_token = os.getenv("GRAPHQL_TOKEN")
+    graphql_token = os.environ.get("GRAPHQL_TOKEN")
     if not graphql_token:
-        logger.warning("GRAPHQL_TOKEN not provided — running in CI mode")
+        logger.error("GRAPHQL_TOKEN environment variable is required")
+        sys.exit(1)
 
-    pepy_api_key = os.getenv("PEPY_API_KEY")
+    pepy_api_key = os.environ.get("PEPY_API_KEY")
     if not pepy_api_key:
-        logger.warning("PEPY_API_KEY not provided — running in CI mode")
-
-    if not graphql_token or not pepy_api_key:
-        logger.warning("Missing secrets — skipping fetch step")
-        return
-
+        logger.error("PEPY_API_KEY environment variable is required")
+        sys.exit(1)
 
     logger.info("Starting GitHub organization metrics fetcher")
 
