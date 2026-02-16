@@ -16,7 +16,10 @@ permissions:
   contents: write
   pages: write
   id-token: write
-
+env:
+  GRAPHQL_TOKEN: ${{ secrets.GRAPHQL_TOKEN }}
+  PEPY_API_KEY: ${{ secrets.PEPY_API_KEY }}
+  ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}Collapse comment
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
@@ -58,12 +61,10 @@ jobs:
 
 
       - name: Set up Quarto
-        if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
         uses: quarto-dev/quarto-actions/setup@v2
 
       # Render site
       - name: Render site
-        if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
         run: quarto render
 
       # Upload only rendered output (build folder)
