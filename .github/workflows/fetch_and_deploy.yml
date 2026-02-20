@@ -20,7 +20,6 @@ env:
   GRAPHQL_TOKEN: ${{ secrets.GRAPHQL_TOKEN }}
   PEPY_API_KEY: ${{ secrets.PEPY_API_KEY }}
   ORGANIZATION_NAME: ${{ vars.ORGANIZATION_NAME }}
-
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
@@ -47,9 +46,10 @@ jobs:
       - name: Restore conda downloads cache
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.dashboard
+          path: ~/.dashboard
           key: conda-download-cache-${{ env.DATE }}
+          restore-keys: |
+            conda-download-cache-
 
       - name: Install dependencies
         run: |
@@ -59,15 +59,18 @@ jobs:
       - name: Fetch and save data
         run: python -m oss_dashboard.main
 
+
       - name: Set up Quarto
-        if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
         uses: quarto-dev/quarto-actions/setup@v2
 
-      # 👇 single step that both renders and deploys to the gh‑pages branch
-      - name: Render and publish
+      # Render site
+      - name: Render site
+        run: quarto render
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         if: ((github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'schedule')) || github.event_name == 'workflow_dispatch'
-        uses: quarto-dev/quarto-actions/publish@v2
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          target: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
