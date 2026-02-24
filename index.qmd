@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 ```{python}
 #| label: load-packages
 import itables
+from itables import JavascriptFunction
 from oss_dashboard.utils import format_data
 ```
 
@@ -47,6 +48,36 @@ table_options = {
     "scrollX": True,
     "fixedColumns": {"start": 1},
     "autoWidth": True,
+    "footer": True,
+    "footerCallback": JavascriptFunction("""
+    function(row, data, start, end, display) {
+        const api = this.api();
+        api.columns().every(function(colIdx) {
+            const column = api.column(colIdx);
+            if (colIdx === 0) {
+                $(column.footer()).html("TOTAL");
+                return;
+            }
+            if (!column.visible()) {
+              $(column.footer()).text("");
+              return;
+            }
+            const colData = column.data().toArray();
+            const isNumeric = colData.every(v => {
+                if (v === null || v === "") return true;
+                return /^\\d+$/.test(String(v));
+            });
+            if (!isNumeric) {
+                $(column.footer()).html("None");
+                return;
+            }
+            const total = colData.reduce((a,b) => {
+                return (parseInt(a)||0) + (parseInt(b)||0);
+            },0);
+            $(column.footer()).html(total);
+        });
+    }
+    """),
 }
 ```
 
