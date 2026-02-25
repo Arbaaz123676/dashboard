@@ -68,7 +68,7 @@ table_options = {
                 return /^\\d+$/.test(String(v));
             });
             if (!isNumeric) {
-                $(column.footer()).html("None");
+                $(column.footer()).html(" ");
                 return;
             }
             const total = colData.reduce((a,b) => {
