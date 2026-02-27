@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 ```{python}
 #| label: load-packages
 import itables
-from itables import JavascriptFunction
 from oss_dashboard.utils import format_data
 ```
 
@@ -49,13 +48,13 @@ table_options = {
     "fixedColumns": {"start": 1},
     "autoWidth": True,
     "footer": True,
-    "footerCallback": JavascriptFunction("""
+    "footerCallback": itables.JavascriptFunction("""
     function(row, data, start, end, display) {
         const api = this.api();
         api.columns().every(function(colIdx) {
             const column = api.column(colIdx);
             if (colIdx === 0) {
-                $(column.footer()).html("TOTAL");
+                $(column.footer()).html("Total");
                 return;
             }
             if (!column.visible()) {
