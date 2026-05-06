@@ -37,6 +37,7 @@ itables.options.classes="display nowrap cell-border"
 itables.options.buttons = ["csv", "colvis"]
 itables.options.columnControl=["order", "searchDropdown"]
 itables.options.ordering = {"indicators": False, "handler": False}
+itables.options.allow_html = True
 
 table_options = {
     "columnDefs": [
