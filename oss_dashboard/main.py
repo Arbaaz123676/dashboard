@@ -85,7 +85,7 @@ def output_result(result: Result, org_name: str) -> Path:
     Returns:
         Path to the output file
     """
-    destination = Path(__file__).parent / "data" / f"data_{org_name}.json"
+    destination = Path.home() / ".dashboard" / "data" / f"data_{org_name}.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
 
     with open(destination, "w") as f:
@@ -119,10 +119,9 @@ def main() -> None:
     client = GitHubClient(graphql_token)
 
     yaml_config = load_config()
-    env_organization_name = os.environ.get("ORGANIZATION_NAME")
     config_organization_names = yaml_config.get("organization", [])
 
-    if not env_organization_name and not config_organization_names:
+    if not config_organization_names:
         logger.error("ORGANIZATION_NAME or config.yml organization required")
         sys.exit(1)
 
@@ -140,7 +139,7 @@ def main() -> None:
     for org_name in config_organization_names:
         logger.info("Fetching data for organization %s", org_name)
 
-        effective_org_name = env_organization_name or org_name
+        effective_org_name = org_name
 
         config = Config(
             organization=effective_org_name,

@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 ```{python}
 #| label: load-packages
+from pathlib import Path
+
 import itables
 from oss_dashboard.utils import format_data
 ```
@@ -30,13 +32,16 @@ from oss_dashboard.utils import format_data
 #| label: load-data
 #| message: false
 
-niu_data, niu_date = format_data("oss_dashboard/data/data_neuroinformatics-unit.json")
-brainglobe_data, brainglobe_date = format_data("oss_dashboard/data/data_brainglobe.json")
+data_cache_path = Path.home() / ".dashboard" / "data"
+niu_data, niu_date = format_data(data_cache_path / "data_neuroinformatics-unit.json")
+brainglobe_data, brainglobe_date = format_data(data_cache_path / "data_brainglobe.json")
+photon_mosaic_data, photon_mosaic_date = format_data(data_cache_path / "data_photon-mosaic.json")
 
 itables.options.classes="display nowrap cell-border"
 itables.options.buttons = ["csv", "colvis"]
 itables.options.columnControl=["order", "searchDropdown"]
 itables.options.ordering = {"indicators": False, "handler": False}
+itables.options.allow_html = True
 
 table_options = {
     "columnDefs": [
@@ -47,6 +52,36 @@ table_options = {
     "scrollX": True,
     "fixedColumns": {"start": 1},
     "autoWidth": True,
+    "footer": True,
+    "footerCallback": itables.JavascriptFunction("""
+    function(row, data, start, end, display) {
+        const api = this.api();
+        api.columns().every(function(colIdx) {
+            const column = api.column(colIdx);
+            if (colIdx === 0) {
+                $(column.footer()).html("Total");
+                return;
+            }
+            if (!column.visible()) {
+              $(column.footer()).text("");
+              return;
+            }
+            const colData = column.data().toArray();
+            const isNumeric = colData.every(v => {
+                if (v === null || v === "") return true;
+                return /^\\d+$/.test(String(v));
+            });
+            if (!isNumeric) {
+                $(column.footer()).html(" ");
+                return;
+            }
+            const total = colData.reduce((a,b) => {
+                return (parseInt(a)||0) + (parseInt(b)||0);
+            },0);
+            $(column.footer()).html(total);
+        });
+    }
+    """),
 }
 ```
 
@@ -62,4 +97,10 @@ print("Data last updated on:", niu_date.strftime("%A, %d. %B %Y %I:%M%p"))
 #| title: "BrainGlobe"
 itables.show(brainglobe_data, **table_options)
 print("Data last updated on:", brainglobe_date.strftime("%A, %d. %B %Y %I:%M%p"))
+```
+
+```{python}
+#| title: "Photon Mosaic"
+itables.show(photon_mosaic_data, **table_options)
+print("Data last updated on:", photon_mosaic_date.strftime("%A, %d. %B %Y %I:%M%p"))
 ```
