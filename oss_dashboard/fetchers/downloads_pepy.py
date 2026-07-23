@@ -14,7 +14,10 @@ from oss_dashboard.constants import (
     PEPY_RATE_LIMIT_REQUESTS,
     PEPY_RATE_LIMIT_SLEEP_SECONDS,
 )
-from oss_dashboard.fetchers.utils import query_repo_names
+from oss_dashboard.fetchers.utils import (
+    load_pypi_aliases,
+    query_repo_names,
+)
 from oss_dashboard.github_client import GitHubClient
 from oss_dashboard.models import Config, Result
 
@@ -51,9 +54,11 @@ def _query_projects_for_repositories(
     """
     project_results = []
     num_requests = 0
+    aliases = load_pypi_aliases()
 
     for repo in repositories:
         repo_name = repo["name"]
+        project_name = aliases.get(repo_name, repo_name)
         retries = PEPY_MAX_RETRIES
 
         while retries > 0:
@@ -71,7 +76,7 @@ def _query_projects_for_repositories(
                     num_requests = 0
 
                 num_requests += 1
-                response = _fetch_downloads(repo_name, api_key)
+                response = _fetch_downloads(project_name, api_key)
 
                 if response.status_code == HTTPStatus.NOT_FOUND:
                     logger.debug(
