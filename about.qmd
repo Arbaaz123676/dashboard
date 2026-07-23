@@ -10,7 +10,7 @@ The Dashboard is currently a snapshot of data from the **SWC/GCNU Neuroinformati
 
 ### Metrics and Definitions
 
-`Collaborators:` Collaborator is an individual that can read and write to the current repository. Metric calculates the current number of Collaborators.
+`Contributors:` Contributor is an individual that can read and write to the current repository. Metric calculates the current number of Contributors.
 
 `Watchers:` The number of users who are tracking a particular repository, receiving notifications regarding its activity.
 

@@ -11,6 +11,20 @@ from oss_dashboard.models import Config
 
 
 @lru_cache(maxsize=1)
+def load_pypi_aliases() -> dict[str, str]:
+    """Load pypi aliases.
+
+    Returns:
+        Dictionary of pypi aliases.
+    """
+    path = Path(__file__).parent.parent / "pypi_aliases.json"
+    if path.exists():
+        with open(path) as f:
+            return json.load(f)
+    return {}
+
+
+@lru_cache(maxsize=1)
 def load_excluded_repos(config_dir: str | None = None) -> tuple[str, ...]:
     """Load the list of excluded repositories.
 
